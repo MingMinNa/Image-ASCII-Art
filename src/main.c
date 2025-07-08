@@ -9,7 +9,9 @@
 int main(int argc, char *argv[]){
 
     ArgParser *parser = initParser(argc, argv);
+    showParser(parser);
     Arguments *args = parse(parser);
+    showArgs(args);
     
     switch (args->func_type){
 

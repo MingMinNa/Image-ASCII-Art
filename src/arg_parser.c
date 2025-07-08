@@ -22,13 +22,13 @@ ArgParser* initParser(int argc, char *argv[]) {
     parser->argv = (char **)malloc(sizeof(char *) * argc);
 
     for(int i = 0; i < argc; ++i) {
-        parser->argv[i] = (char *)malloc(sizeof(char) * (strlen(argv[i]) + 1));
-        strncpy(parser->argv[i], argv[i], strlen(argv[i]));
+        parser->argv[i] = (char *)calloc(strlen(argv[i]) + 1, sizeof(char));
+        snprintf(parser->argv[i], strlen(argv[i]) + 1, "%s", argv[i]);
     }
     
     uint32_t num_options = sizeof(options) / sizeof(options[0]);
     parser->num_options = num_options;
-    parser->option_index = (int *)malloc(sizeof(int) * num_options);
+    parser->option_index = (int *)calloc(num_options, sizeof(int));
     
     for(uint32_t i = 0; i < num_options; ++i) {
         parser->option_index[i] = -1;   
@@ -81,15 +81,15 @@ Arguments* parse(ArgParser *parser) {
     CHECK_ERROR(index == -1, "Option \"--input\" is required");
     CHECK_ERROR(index + 1 >= parser->argc, "Option \"--input\" requires a value, but none was provided");
     CHECK_ERROR(!checkFileExist(parser->argv[index + 1]), "The input file doesn't exist");
-    args->input_path = (char *)malloc(sizeof(char) * strlen(parser->argv[index + 1]));
-    strncpy(args->input_path, parser->argv[index + 1], strlen(parser->argv[index + 1]));
+    args->input_path = (char *)calloc(strlen(parser->argv[index + 1]) + 1, sizeof(char));
+    snprintf(args->input_path, strlen(parser->argv[index + 1]) + 1, "%s", parser->argv[index + 1]);
 
     /* --output [2] */
     index = parser->option_index[2]; 
     CHECK_ERROR(index == -1, "Option \"--output\" is required");
     CHECK_ERROR(index + 1 >= parser->argc, "Option \"--output\" requires a value, but none was provided");
-    args->output_path = (char *)malloc(sizeof(char) * strlen(parser->argv[index + 1]));
-    strncpy(args->output_path, parser->argv[index + 1], strlen(parser->argv[index + 1]));
+    args->output_path = (char *)calloc(strlen(parser->argv[index + 1]) + 1, sizeof(char));
+    snprintf(args->output_path, strlen(parser->argv[index + 1]) + 1, "%s", parser->argv[index + 1]);
 
     /* --mode [3] */
     index = parser->option_index[3];
