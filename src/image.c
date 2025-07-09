@@ -118,6 +118,8 @@ void saveImage(const Image *image_ptr, const char *output_image_path) {
 }
 
 void freeImage(Image *image_ptr) {
+    
+    if(image_ptr == NULL) return;
 
     if(image_ptr->data != NULL) {
         stbi_image_free(image_ptr->data);

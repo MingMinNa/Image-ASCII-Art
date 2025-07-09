@@ -20,5 +20,7 @@ do { \
 
 bool checkFileExist(const char *file_path);
 bool checkExtension(const char *file_name, const char *ext_name);
+bool isPNGFile(const char *file_name);
+bool isJPGFile(const char *file_name);
 
 #endif

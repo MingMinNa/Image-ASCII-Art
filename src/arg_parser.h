@@ -1,16 +1,13 @@
 #ifndef ARG_PARSER_H
 #define ARG_PARSER_H
 
+#include "font.h"
+
 #include <stdint.h>
 
 enum FuncType {
     TEXT_ASCII, 
     IMG_ASCII
-};
-
-enum ModeType {
-    SIMPLE, 
-    COMPLEX
 };
 
 typedef struct {
@@ -26,6 +23,7 @@ typedef struct {
     uint32_t num_cols;
     enum FuncType func_type;
     enum ModeType mode;
+    uint8_t bg_code;
 } Arguments;
 
 ArgParser* initParser(int argc, char *argv[]);

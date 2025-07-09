@@ -1,9 +1,9 @@
+#include "utils.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
-#include "utils.h"
 
 
 bool checkFileExist(const char *file_path) {
@@ -21,6 +21,7 @@ bool checkFileExist(const char *file_path) {
 }
 
 bool checkExtension(const char *file_name, const char *ext_name) {
+    
     CHECK_ERROR(file_name == NULL, "The file name is NULL");
     CHECK_ERROR(ext_name == NULL, "The extension is NULL");
     size_t file_name_len = strlen(file_name);
@@ -34,4 +35,20 @@ bool checkExtension(const char *file_name, const char *ext_name) {
             return false;
     }
     return true;
+}
+
+
+bool isPNGFile(const char *file_name) {
+
+    if(file_name == NULL) return false;
+    
+    return checkExtension(file_name, ".png") || checkExtension(file_name, ".PNG");
+}
+
+bool isJPGFile(const char *file_name) {
+
+    if(file_name == NULL) return false;
+
+    return checkExtension(file_name, ".jpg") || checkExtension(file_name, ".jpeg") ||
+           checkExtension(file_name, ".JPG") || checkExtension(file_name, ".JPEG");
 }
