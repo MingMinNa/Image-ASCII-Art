@@ -1,10 +1,8 @@
 #define STB_TRUETYPE_IMPLEMENTATION
-// #include "../include/stb_truetype.h"
 
-#include "font.h"
 #include "utils.h"
+#include "font.h"
 #include "image.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -20,6 +18,8 @@ Font* getFont(enum ModeType mode) {
     else                font_ptr->char_list = complex_alphabet;
     
     font_ptr->sample_character = 'A';
+    font_ptr->pad_x = 1;
+    font_ptr->pad_y = 2;
 
     FILE *fp = fopen("fonts/DejaVuSansMono-Bold.ttf", "rb");
     CHECK_ERROR(fp == NULL, "Fail to load font");
@@ -38,23 +38,28 @@ Font* getFont(enum ModeType mode) {
     }
 
     float pixel_height = 20.0f;
-    font_ptr->scale = stbtt_ScaleForPixelHeight(&font_ptr->fontinfo, pixel_height);
-    font_ptr->h_scale = 2;
+    font_ptr->scale    = stbtt_ScaleForPixelHeight(&font_ptr->fontinfo, pixel_height);
+    font_ptr->h_scale  = 2;
     
     return font_ptr;
 }
 
-BBox findBoundingBox(uint8_t *image, int channels, int width, int height, uint8_t bg_code) {
+BBox findBoundingBox(Image *out_image, uint8_t bg_code) {
 
-    int left = width, right = -1, top = height, bottom = -1;
+    const int32_t height   = out_image->height, 
+                  width    = out_image->width, 
+                  channels = out_image->channels;
 
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
+    int32_t left = width, right = -1, 
+            top = height, bottom = -1;
+
+    for (int32_t y = 0; y < height; ++y) {
+        for (int32_t x = 0; x < width; ++x) {
 
             bool is_bg = true;
 
-            for(int c = 0; c < channels; ++ c) {
-                uint8_t pixel = image[(y * width + x) * channels + c];
+            for(int32_t c = 0; c < channels; ++ c) {
+                uint8_t pixel = out_image->data[(y * width + x) * channels + c];
                 if(pixel != bg_code) {
                     is_bg = false;
                     break;
@@ -88,8 +93,10 @@ BBox findBoundingBox(uint8_t *image, int channels, int width, int height, uint8_
 
 void freeFont(Font *font_ptr) {
 
-    if(font_ptr == NULL) return;
+    if(font_ptr == NULL) 
+        return;
 
-    if (font_ptr->ttf_buffer) free(font_ptr->ttf_buffer);
+    if (font_ptr->ttf_buffer != NULL) 
+        free(font_ptr->ttf_buffer);
     free(font_ptr);
 }

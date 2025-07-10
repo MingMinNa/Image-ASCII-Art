@@ -1,30 +1,31 @@
 #ifndef ARG_PARSER_H
 #define ARG_PARSER_H
 
-#include "font.h"
-
 #include <stdint.h>
+
+enum ModeType;
+typedef struct Image Image;
 
 enum FuncType {
     TEXT_ASCII, 
-    IMG_ASCII, 
-    IMG_COLOR,
+    GRAY_IMG, 
+    COLOR_IMG,
 };
 
-typedef struct {
-    uint32_t argc;
+typedef struct ArgParser{
+    int32_t *option_index;
     uint32_t num_options;
-    int *option_index;
+    uint32_t argc;
     char **argv;
 } ArgParser;
 
-typedef struct {
+typedef struct Arguments{
+    uint32_t num_cols;
+    uint8_t bg_code;
     char *input_path;
     char *output_path;
-    uint32_t num_cols;
     enum FuncType func_type;
     enum ModeType mode;
-    uint8_t bg_code;
 } Arguments;
 
 ArgParser* initParser(int argc, char *argv[]);

@@ -1,9 +1,11 @@
 #include "utils.h"
+#include "font.h"
+#include "image.h"
 #include "arg_parser.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 char *options[][2] = {
     {"--type",       "str"},    // required
@@ -29,7 +31,7 @@ ArgParser* initParser(int argc, char *argv[]) {
     
     uint32_t num_options = sizeof(options) / sizeof(options[0]);
     parser->num_options = num_options;
-    parser->option_index = (int *)calloc(num_options, sizeof(int));
+    parser->option_index = (int32_t *)calloc(num_options, sizeof(int));
     
     for(uint32_t i = 0; i < num_options; ++i) {
         parser->option_index[i] = -1;   
@@ -48,28 +50,28 @@ Arguments* parse(ArgParser *parser) {
     
     Arguments *args = (Arguments *)malloc(sizeof(Arguments));
 
-    // default value 
+    /* default values */
     args->func_type = TEXT_ASCII;
-    args->num_cols = 300;
-    args->mode = COMPLEX;
     args->input_path = NULL;
     args->output_path = NULL;
-    args->bg_code = 0;
+    args->mode = COMPLEX;
+    args->num_cols = 300;
+    args->bg_code = 0;      // black(0) / white(255)
 
-    int index = -1;
+    int32_t index = -1;
 
     /* --type [0] */
     index = parser->option_index[0];
     CHECK_ERROR(index == -1, "Option \"--type\" is required");
     CHECK_ERROR(index + 1 >= parser->argc, "Option \"--type\" requires a value, but none was provided");
 
-    const char *func_type_strs[]         = {"text",     "image",   "image_color"};
-    const enum FuncType func_type_vals[] = {TEXT_ASCII, IMG_ASCII, IMG_COLOR};
+    const char *func_type_strs[]         = { "text"    , "image"  , "image_color"};
+    const enum FuncType func_type_vals[] = { TEXT_ASCII, GRAY_IMG , COLOR_IMG    };
     uint16_t num_types = sizeof(func_type_strs) / sizeof(func_type_strs[0]);
     
     bool is_valid_val = false;
 
-    for(uint32_t i = 0; i < num_types; ++i) {
+    for(uint16_t i = 0; i < num_types; ++i) {
         if(!strcmp(parser->argv[index + 1], func_type_strs[i])) {
             args->func_type = func_type_vals[i];
             is_valid_val = true;
@@ -98,13 +100,13 @@ Arguments* parse(ArgParser *parser) {
     if(index != -1) {
         CHECK_ERROR(index + 1 >= parser->argc, "Option \"--mode\" requires a value, but none was provided.");
 
-        const char *model_type_strs[]         = {"simple", "complex"};
-        const enum ModeType model_type_vals[] = {SIMPLE,   COMPLEX};
+        const char *model_type_strs[]         = { "simple", "complex"};
+        const enum ModeType model_type_vals[] = { SIMPLE  , COMPLEX  };
         uint16_t num_types = sizeof(model_type_strs) / sizeof(model_type_strs[0]);
         
         bool is_valid_val = false;
 
-        for(uint32_t i = 0; i < num_types; ++i) {
+        for(uint16_t i = 0; i < num_types; ++i) {
             if(!strcmp(parser->argv[index + 1], model_type_strs[i])) {
                 args->mode = model_type_vals[i];
                 is_valid_val = true;
@@ -124,7 +126,7 @@ Arguments* parse(ArgParser *parser) {
 
         for(uint32_t i = 0, len = strlen(parser->argv[index + 1]); i < len; ++i) {
             char ch = parser->argv[index + 1][i];
-            if('0' <= ch  && ch <= '9')
+            if(isdigit(ch))
                 num_cols = num_cols * 10 + (ch - '0');
             else {
                 is_valid_val = false;
@@ -140,13 +142,13 @@ Arguments* parse(ArgParser *parser) {
     if(index != -1) {
         CHECK_ERROR(index + 1 >= parser->argc, "Option \"--background\" requires a value, but none was provided.");
 
-        const char *background_colors[]  = {"white", "black"};
-        const uint8_t background_codes[] = {    255,       0};
+        const char *background_colors[]  = { "white", "black"};
+        const uint8_t background_codes[] = {     255,       0};
         uint16_t num_types = sizeof(background_colors) / sizeof(background_colors[0]);
         
         bool is_valid_val = false;
 
-        for(uint32_t i = 0; i < num_types; ++i) {
+        for(uint16_t i = 0; i < num_types; ++i) {
             if(!strcmp(parser->argv[index + 1], background_colors[i])) {
                 args->bg_code = background_codes[i];
                 is_valid_val = true;
@@ -162,14 +164,14 @@ Arguments* parse(ArgParser *parser) {
 // For debug
 void showParser(ArgParser *parser) {
 
-    printf("argc: %d\n", parser->argc);
-    for(int i = 0; i < parser->argc; ++i) {
-        printf("argv[%d]: %s\n", i, parser->argv[i]);
+    printf("argc: %u\n", parser->argc);
+    for(uint32_t i = 0; i < parser->argc; ++i) {
+        printf("argv[%u]: %s\n", i, parser->argv[i]);
     }
 
-    printf("num_options: %d\n", parser->num_options);
-    for(int i = 0; i < parser->num_options; ++i) {
-        printf("option_index[%d]: %d\n", i, parser->option_index[i]);
+    printf("num_options: %u\n", parser->num_options);
+    for(uint32_t i = 0; i < parser->num_options; ++i) {
+        printf("option_index[%u]: %d\n", i, parser->option_index[i]);
     }
     return;
 }
@@ -185,31 +187,41 @@ void showArgs(Arguments *args) {
 
     printf("num_cols: %u\n", args->num_cols);
     
-    if(args->func_type == TEXT_ASCII) printf("type: TEXT_ASCII\n");
-    else                              printf("type: IMG_ASCII\n");
+    if     (args->func_type == TEXT_ASCII) printf("type: TEXT_ASCII\n");
+    else if(args->func_type == GRAY_IMG)   printf("type: GRAY_IMG\n");
+    else                                   printf("type: COLOR_IMG\n");
 
-    if(args->mode == SIMPLE) printf("mode: SIMPLE\n");
-    else                     printf("mode: COMPLEX\n");
+    if  (args->mode == SIMPLE) printf("mode: SIMPLE\n");
+    else                       printf("mode: COMPLEX\n");
 
-    if(args->bg_code == 255) printf("background: white\n");
-    else                     printf("background: black\n");
+    if  (args->bg_code == 255) printf("background: white\n");
+    else                       printf("background: black\n");
 
     return;
 }
 
 void freeParser(ArgParser *parser) {
 
-    if(parser == NULL) return;
+    if(parser == NULL) 
+        return;
+    
+    if(parser->option_index != NULL) 
+        free(parser->option_index);
 
-    for(int i = 0; i < parser->argc; ++i)
-        free(parser->argv[i]);
-    free(parser->argv);
-    free(parser->option_index);
+    if(parser->argv != NULL) {
+        for(uint32_t i = 0; i < parser->argc; ++i) {
+            if(parser->argv[i] == NULL) continue;
+            free(parser->argv[i]);
+        }
+        free(parser->argv);
+    } 
+    free(parser);
 }
 
 void freeArgs(Arguments *args) {
 
-    if(args == NULL) return;
+    if(args == NULL) 
+        return;
 
     if(args->input_path != NULL)
         free(args->input_path);
