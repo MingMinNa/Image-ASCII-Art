@@ -13,6 +13,12 @@ enum ModeType {
 };
 
 typedef struct {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} Color;
+
+typedef struct {
     const char *char_list;
     char sample_character;
     stbtt_fontinfo fontinfo;
@@ -29,10 +35,7 @@ typedef struct {
 } BBox;
 
 Font* getFont(enum ModeType mode);
-void renderChar(uint8_t *out_image, int out_width, int out_height,
-                char ch, int x_pos, int y_pos, Font *font_ptr, uint8_t bg_code);
-BBox findBoundingBox(uint8_t *image, int width, int height, uint8_t bg);
-uint8_t* cropImage(uint8_t *image, int width, int height, BBox box, int *new_w, int *new_h);
+BBox findBoundingBox(uint8_t *image, int channels, int width, int height, uint8_t bg);
 void freeFont(Font *font_ptr);
 
 #endif

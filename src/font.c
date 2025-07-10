@@ -44,42 +44,24 @@ Font* getFont(enum ModeType mode) {
     return font_ptr;
 }
 
-void renderChar(uint8_t *out_image, int out_width, int out_height,
-                char ch, int x_pos, int y_pos, Font *font_ptr, uint8_t bg_code) {
-                    
-    int w, h, xoff, yoff;
+BBox findBoundingBox(uint8_t *image, int channels, int width, int height, uint8_t bg_code) {
 
-    uint8_t *bitmap = stbtt_GetCodepointBitmap(
-        &font_ptr->fontinfo, 0, font_ptr->scale,
-        ch, &w, &h, &xoff, &yoff);
-
-
-    for (int y = 0; y < h; ++y) {
-        int out_y = y_pos + y + yoff;
-        if (out_y < 0 || out_y >= out_height) continue;
-
-        for (int x = 0; x < w; ++x) {
-            int out_x = x_pos + x + xoff;
-            if (out_x < 0 || out_x >= out_width) continue;
-
-            uint8_t alpha   = bitmap[y * w + x];
-            uint8_t blended = (alpha * (255 - bg_code) + (255 - alpha) * bg_code) / 255;
-
-            out_image[out_y * out_width + out_x] = blended;
-        }
-    }
-
-    stbtt_FreeBitmap(bitmap, NULL);
-}
-
-BBox findBoundingBox(uint8_t *image, int width, int height, uint8_t bg) {
     int left = width, right = -1, top = height, bottom = -1;
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            uint8_t pixel = image[y * width + x];
 
-            if (pixel != bg) {
+            bool is_bg = true;
+
+            for(int c = 0; c < channels; ++ c) {
+                uint8_t pixel = image[(y * width + x) * channels + c];
+                if(pixel != bg_code) {
+                    is_bg = false;
+                    break;
+                }
+            }
+
+            if (!is_bg) {
                 if (x < left) left = x;
                 if (x > right) right = x;
                 if (y < top) top = y;
@@ -104,26 +86,10 @@ BBox findBoundingBox(uint8_t *image, int width, int height, uint8_t bg) {
     return box;
 }
 
-uint8_t *cropImage(uint8_t *image, int width, int height, BBox box, int *new_w, int *new_h) {
-    int out_w = box.right - box.left + 1;
-    int out_h = box.bottom - box.top + 1;
-
-    uint8_t *cropped = malloc(out_w * out_h);
-
-    for (int y = 0; y < out_h; ++y) {
-        for (int x = 0; x < out_w; ++x) {
-            cropped[y * out_w + x] = image[(box.top + y) * width + (box.left + x)];
-        }
-    }
-
-    *new_w = out_w;
-    *new_h = out_h;
-    return cropped;
-}
-
 void freeFont(Font *font_ptr) {
 
     if(font_ptr == NULL) return;
+
     if (font_ptr->ttf_buffer) free(font_ptr->ttf_buffer);
     free(font_ptr);
 }

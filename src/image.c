@@ -5,6 +5,7 @@
 #include "../include/stb_image_write.h"
 
 #include "image.h"
+#include "font.h"
 #include "utils.h"
 
 #include <stdio.h>
@@ -90,6 +91,65 @@ Image* toGray(Image *image_ptr) {
     }
 
     return gray_image;
+}
+
+void renderChar(uint8_t *out_image, int channels, int out_width,  int out_height,     
+                char ch,            int x_pos,    int y_pos,      Font *font_ptr, 
+                Color fg_color, Color bg_color) {
+                    
+    int w, h, xoff, yoff;
+
+    uint8_t *bitmap = stbtt_GetCodepointBitmap(
+        &font_ptr->fontinfo, 0, font_ptr->scale,
+        ch, &w, &h, &xoff, &yoff);
+
+
+    for (int y = 0; y < h; ++y) {
+        int out_y = y_pos + y + yoff;
+        if (out_y < 0 || out_y >= out_height) continue;
+
+        for (int x = 0; x < w; ++x) {
+            int out_x = x_pos + x + xoff;
+            if (out_x < 0 || out_x >= out_width) continue;
+
+            int out_idx = (out_y * out_width + out_x) * channels;
+
+            uint8_t alpha   = bitmap[y * w + x];
+            if(channels == 1) {
+                uint8_t blended = (alpha * fg_color.r + (255 - alpha) * bg_color.r) / 255;
+                out_image[out_idx] = blended;
+            }
+            else if(channels == 3) {
+                out_image[out_idx + 0] = (alpha * fg_color.r + (255 - alpha) * bg_color.r) / 255;
+                out_image[out_idx + 1] = (alpha * fg_color.g + (255 - alpha) * bg_color.g) / 255;
+                out_image[out_idx + 2] = (alpha * fg_color.b + (255 - alpha) * bg_color.b) / 255;
+            }
+            
+        }
+    }
+
+    stbtt_FreeBitmap(bitmap, NULL);
+}
+
+uint8_t *cropImage(uint8_t *image, int channels, int width,  int height, 
+                   BBox box,       int *new_w,   int *new_h) {
+
+    int out_w = box.right - box.left + 1;
+    int out_h = box.bottom - box.top + 1;
+
+    uint8_t *cropped = malloc(out_w * out_h * channels);
+
+    for (int y = 0; y < out_h; ++y) {
+        for (int x = 0; x < out_w; ++x) {
+            for(int c = 0; c < channels; ++c) {
+                cropped[(y * out_w + x) * channels + c] = image[((box.top + y) * width + (box.left + x)) * channels + c];
+            }
+        }
+    }
+
+    *new_w = out_w;
+    *new_h = out_h;
+    return cropped;
 }
 
 void saveImage(const Image *image_ptr, const char *output_image_path) {

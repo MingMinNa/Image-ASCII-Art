@@ -11,7 +11,7 @@ char *options[][2] = {
     {"--output",     "str"},    // required
     {"--mode",       "str"},    // default: COMPLEX
     {"--num_cols",   "int"},    // default: 300
-    {"--background", "str"},    // default: black(0), white(255)
+    {"--background", "str"},    // default: black(0)
 };
 
 ArgParser* initParser(int argc, char *argv[]) {
@@ -63,8 +63,8 @@ Arguments* parse(ArgParser *parser) {
     CHECK_ERROR(index == -1, "Option \"--type\" is required");
     CHECK_ERROR(index + 1 >= parser->argc, "Option \"--type\" requires a value, but none was provided");
 
-    const char *func_type_strs[]         = {"text",     "image"};
-    const enum FuncType func_type_vals[] = {TEXT_ASCII, IMG_ASCII};
+    const char *func_type_strs[]         = {"text",     "image",   "image_color"};
+    const enum FuncType func_type_vals[] = {TEXT_ASCII, IMG_ASCII, IMG_COLOR};
     uint16_t num_types = sizeof(func_type_strs) / sizeof(func_type_strs[0]);
     
     bool is_valid_val = false;

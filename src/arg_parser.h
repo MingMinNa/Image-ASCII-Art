@@ -7,7 +7,8 @@
 
 enum FuncType {
     TEXT_ASCII, 
-    IMG_ASCII
+    IMG_ASCII, 
+    IMG_COLOR,
 };
 
 typedef struct {

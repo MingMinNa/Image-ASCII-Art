@@ -19,6 +19,9 @@ int main(int argc, char *argv[]){
         case IMG_ASCII:
             ImageAscii(args);
             break;
+        case IMG_COLOR:
+            ImageColorAscii(args);
+            break;
         default:
             CHECK_ERROR(true, "Invalid func type");
             break;

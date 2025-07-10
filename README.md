@@ -15,7 +15,7 @@ It aims to reimplement part of its core functionalities in C, providing a simple
 |---------------------|------------------------------|-----------|
 | `img2txt.py`        | Image → Text                 | ✓         |
 | `img2img.py`        | Image → Grayscale ASCII Art  | ✓         |
-| `img2img_color.py`  | Image → Color ASCII Art      |           |
+| `img2img_color.py`  | Image → Colored ASCII Art    | ✓         |
 
 ## How to Use
 
@@ -33,7 +33,7 @@ It aims to reimplement part of its core functionalities in C, providing a simple
         --background    Optional. Background color.
 
     Accepted values and defaults
-        --type          ["text", "image"]
+        --type          ["text", "image", "image_color"]
         --input         Path string
         --output        Path string
         --num_cols      Integer                Default: 300
@@ -52,9 +52,9 @@ It aims to reimplement part of its core functionalities in C, providing a simple
     ./main --type image --input ./input.png --output ./output.png --mode complex --background black
     ```
 
-    ##### Grayscale ASCII Image Output (White Background)
+    ##### Colored ASCII Image Output (White Background)
     ```bash
-    ./main --type image --input ./input.png --output ./output.png --num_cols 200 --mode simple --background white
+    ./main --type image_color --input ./input.png --output ./output.png --num_cols 200 --mode simple --background white
     ```
 
 ## Demo
@@ -73,6 +73,12 @@ It aims to reimplement part of its core functionalities in C, providing a simple
   <i>Image to Grayscale ASCII Image</i><br/>
   <img src="demo/Aris_simple_500.png" width=800><br/>
   <img src="demo/Aris_complex_500.png" width=800>
+</p>
+
+<p align="center">
+  <i>Image to Colored ASCII Image</i><br/>
+  <img src="demo/Aris_simple_500_black.png" width=800>
+  <img src="demo/Aris_complex_500_white.png" width=800><br/>
 </p>
 
 ## References & Tools

@@ -16,8 +16,8 @@
 | 對應檔案名稱        | 說明                     | 狀態       |
 |--------------------|-------------------------|------------|
 | `img2txt.py`       | 圖片 → 文字              | ✓         |
-| `img2img.py`       | 圖片 → 黑白 ASCII 圖片   | ✓          |
-| `img2img_color.py` | 圖片 → 彩色 ASCII 圖片   |           |
+| `img2img.py`       | 圖片 → 黑白 ASCII 圖片   | ✓         |
+| `img2img_color.py` | 圖片 → 彩色 ASCII 圖片   | ✓         |
 
 ## 如何使用
 
@@ -35,7 +35,7 @@
         --background    可選，背景顏色
 
     參數數值範圍與預設值
-        --type          ["text", "image"]
+        --type          ["text", "image", "image_color"]
         --input         路徑字串  
         --output        路徑字串
         --num_cols      整數                    預設為 300
@@ -48,14 +48,14 @@
     ```bash
     ./main --type text --input ./input.png --output ./output.txt
     ```
-    ##### 以圖片輸出（黑底）
+    ##### 以黑白圖片輸出（黑底）
     ```bash
     ./main --type image --input ./input.png --output ./output.png --mode complex --background black
     ```
 
-    ##### 以圖片輸出（白底）
+    ##### 以色彩圖片輸出（白底）
     ```bash
-    ./main --type image --input ./input.png --output ./output.png --num_cols 200 --mode simple --background white
+    ./main --type image_color --input ./input.png --output ./output.png --num_cols 200 --mode simple --background white
     ```
 
 
@@ -75,6 +75,12 @@
   <i>圖片轉黑白 ASCII 圖片</i><br/>
   <img src="demo/Aris_simple_500.png" width=800><br/>
   <img src="demo/Aris_complex_500.png" width=800>
+</p>
+
+<p align="center">
+  <i>圖片轉彩色 ASCII 圖片</i><br/>
+  <img src="demo/Aris_simple_500_black.png" width=800>
+  <img src="demo/Aris_complex_500_white.png" width=800><br/>
 </p>
 
 ## 參考資料與使用工具
