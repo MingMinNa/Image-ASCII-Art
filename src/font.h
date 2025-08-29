@@ -4,20 +4,20 @@
 #include "../include/stb_truetype.h"
 #include <stdint.h>
 
-typedef struct Image Image;
+typedef struct image image;
 
-enum ModeType {
+enum mode_type {
     SIMPLE, 
     COMPLEX
 };
 
-typedef struct Color{
+typedef struct color{
     uint8_t r;
     uint8_t g;
     uint8_t b;
-} Color;
+} color;
 
-typedef struct Font{
+typedef struct font{
     const char *char_list;
     char sample_character;
     stbtt_fontinfo fontinfo;
@@ -26,18 +26,18 @@ typedef struct Font{
     float scale;
     uint8_t pad_x;
     uint8_t pad_y;
-} Font;
+} font;
 
-typedef struct BBox{
+typedef struct bbox{
     uint32_t left;
     uint32_t right;
     uint32_t top; 
     uint32_t bottom;
-} BBox;
+} bbox;
 
-Font* getFont(enum ModeType mode);
-BBox findBoundingBox(Image *out_image, uint8_t bg_code);
-void freeFont(Font *font_ptr);
+font* get_font(enum mode_type mode);
+bbox find_bounding_box(image *out_image, uint8_t bg_code);
+void free_font(font *font_ptr);
 
 extern const char *simple_alphabet;
 extern const char *complex_alphabet;

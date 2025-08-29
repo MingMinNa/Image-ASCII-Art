@@ -11,9 +11,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-Image* createImage(int32_t width, int32_t height, int32_t channels, uint8_t *data) {
+image* create_image(int32_t width, int32_t height, int32_t channels, uint8_t *data) {
     
-    Image *image_ptr    = (Image *)malloc(sizeof(Image));
+    image *image_ptr    = (image *)malloc(sizeof(image));
     image_ptr->width    = width;
     image_ptr->height   = height;
     image_ptr->channels = channels;
@@ -32,19 +32,19 @@ Image* createImage(int32_t width, int32_t height, int32_t channels, uint8_t *dat
     return image_ptr;
 }
 
-Image* loadImage(const char *image_path) {
+image* load_image(const char *image_path) {
 
     int32_t width, height, channels;
     uint8_t *data = stbi_load(image_path, &width, &height, &channels, 0); 
 
     CHECK_ERROR(data == NULL, "Fail to load the image \"%s\"", image_path);
 
-    Image *image_ptr = createImage(width, height, channels, data);
+    image *image_ptr = create_image(width, height, channels, data);
 
     return image_ptr;
 }
 
-Image* toGray(Image *image_ptr) {
+image* to_gray(image *image_ptr) {
 
     int32_t gray_channels = 0;
     
@@ -53,7 +53,7 @@ Image* toGray(Image *image_ptr) {
     else
         gray_channels = image_ptr->channels;
     
-    Image *gray_image = createImage(
+    image *gray_image = create_image(
         image_ptr->width, 
         image_ptr->height, 
         gray_channels, 
@@ -106,8 +106,8 @@ Image* toGray(Image *image_ptr) {
     return gray_image;
 }
 
-void renderChar(Image *out_image, int32_t x_pos , int32_t y_pos, char ch,  
-                Font *font_ptr  , Color fg_color, Color bg_color) {
+void render_char(image *out_image, int32_t x_pos , int32_t y_pos, char ch,
+                 font *font_ptr  , color fg_color, color bg_color) {
 
     const int32_t out_w = out_image->width;
     const int32_t out_h = out_image->height;
@@ -146,7 +146,7 @@ void renderChar(Image *out_image, int32_t x_pos , int32_t y_pos, char ch,
     stbtt_FreeBitmap(bitmap, NULL);
 }
 
-Image* cropImage(Image *out_image, BBox box) {
+image* crop_image(image *out_image, bbox box) {
 
     const int32_t out_w = out_image->width;
     const int32_t channels = out_image->channels;
@@ -165,20 +165,20 @@ Image* cropImage(Image *out_image, BBox box) {
         }
     }
 
-    Image *cropped_image = createImage(cropped_w, cropped_h, channels, cropped);
+    image *cropped_image = create_image(cropped_w, cropped_h, channels, cropped);
 
     return cropped_image;
 }
 
-void saveImage(const Image *image_ptr, const char *output_image_path) {
+void save_image(const image *image_ptr, const char *output_image_path) {
 
-    if(isPNGFile(output_image_path)) {
+    if(is_png_file(output_image_path)) {
         
         stbi_write_png( output_image_path  , image_ptr->width, image_ptr->height, 
                         image_ptr->channels, image_ptr->data , image_ptr->width * image_ptr->channels);
         return;
     }
-    else if(isJPGFile(output_image_path)) {
+    else if(is_jpg_file(output_image_path)) {
 
         stbi_write_jpg( output_image_path  , image_ptr->width, image_ptr->height, 
                         image_ptr->channels, image_ptr->data , 100);
@@ -188,7 +188,7 @@ void saveImage(const Image *image_ptr, const char *output_image_path) {
     CHECK_ERROR(true, "Invalid output image format (%s)", output_image_path);
 }
 
-void freeImage(Image *image_ptr) {
+void free_image(image *image_ptr) {
     
     if(image_ptr == NULL) return;
 

@@ -10,9 +10,9 @@
 const char *simple_alphabet  = "@%#*+=-:. ";
 const char *complex_alphabet = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
-Font* getFont(enum ModeType mode) {
+font* get_font(enum mode_type mode) {
     
-    Font *font_ptr = (Font *)malloc(sizeof(Font));
+    font *font_ptr = (font *)malloc(sizeof(font));
 
     if(mode == SIMPLE)  font_ptr->char_list = simple_alphabet;
     else                font_ptr->char_list = complex_alphabet;
@@ -44,7 +44,7 @@ Font* getFont(enum ModeType mode) {
     return font_ptr;
 }
 
-BBox findBoundingBox(Image *out_image, uint8_t bg_code) {
+bbox find_bounding_box(image *out_image, uint8_t bg_code) {
 
     const int32_t height   = out_image->height, 
                   width    = out_image->width, 
@@ -81,7 +81,7 @@ BBox findBoundingBox(Image *out_image, uint8_t bg_code) {
         bottom = height - 1;
     }
 
-    BBox box = {
+    bbox box = {
         .left = left, 
         .right = right,
         .top = top,  
@@ -91,7 +91,7 @@ BBox findBoundingBox(Image *out_image, uint8_t bg_code) {
     return box;
 }
 
-void freeFont(Font *font_ptr) {
+void free_font(font *font_ptr) {
 
     if(font_ptr == NULL) 
         return;

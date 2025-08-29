@@ -8,26 +8,26 @@
 
 int main(int argc, char *argv[]){
 
-    ArgParser *parser = initParser(argc, argv);
-    Arguments *args = parse(parser);
+    arg_parser *parser = init_parser(argc, argv);
+    arguments *args = parse(parser);
     
     switch (args->func_type){
 
         case TEXT_ASCII:
-            TextAscii(args);
+            text_ascii(args);
             break;
         case GRAY_IMG:
-            GrayImageAscii(args);
+            gray_image_ascii(args);
             break;
         case COLOR_IMG:
-            ColorImageAscii(args);
+            color_image_ascii(args);
             break;
         default:
             CHECK_ERROR(true, "Invalid func type");
             break;
     }
     
-    freeArgs(args);
-    freeParser(parser);
+    free_args(args);
+    free_parser(parser);
     return 0;
 }

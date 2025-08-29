@@ -3,37 +3,37 @@
 
 #include <stdint.h>
 
-enum ModeType;
-typedef struct Image Image;
+enum mode_type;
+typedef struct image image;
 
-enum FuncType {
+enum func_type {
     TEXT_ASCII, 
     GRAY_IMG, 
     COLOR_IMG,
 };
 
-typedef struct ArgParser{
+typedef struct arg_parser{
     int32_t *option_index;
     uint32_t num_options;
     uint32_t argc;
     char **argv;
-} ArgParser;
+} arg_parser;
 
-typedef struct Arguments{
+typedef struct arguments{
     uint32_t num_cols;
     uint8_t bg_code;
     char *input_path;
     char *output_path;
-    enum FuncType func_type;
-    enum ModeType mode;
-} Arguments;
+    enum func_type func_type;
+    enum mode_type mode;
+} arguments;
 
-ArgParser* initParser(int argc, char *argv[]);
-Arguments* parse(ArgParser *parser);
-void showParser(ArgParser *parser);
-void freeParser(ArgParser *parser);
-void showArgs(Arguments *args);
-void freeArgs(Arguments *args);
+arg_parser* init_parser(int argc, char *argv[]);
+arguments* parse(arg_parser *parser);
+void show_parser(arg_parser *parser);
+void free_parser(arg_parser *parser);
+void show_args(arguments *args);
+void free_args(arguments *args);
 
 extern char *options[][2];
 

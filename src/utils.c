@@ -4,8 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-
-bool checkFileExist(const char *file_path) {
+bool check_file_exist(const char *file_path) {
     
     if(file_path == NULL) 
         return false;
@@ -21,7 +20,7 @@ bool checkFileExist(const char *file_path) {
     return is_valid;
 }
 
-bool checkExtension(const char *file_name, const char *ext_name) {
+bool check_extension(const char *file_name, const char *ext_name) {
     
     CHECK_ERROR(file_name == NULL, "The file name is NULL");
     CHECK_ERROR(ext_name == NULL, "The extension is NULL");
@@ -39,22 +38,22 @@ bool checkExtension(const char *file_name, const char *ext_name) {
     return true;
 }
 
-bool isPNGFile(const char *file_name) {
+bool is_png_file(const char *file_name) {
 
     if(file_name == NULL) 
         return false;
     
-    return checkExtension(file_name, ".png") || 
-           checkExtension(file_name, ".PNG");
+    return check_extension(file_name, ".png") || 
+           check_extension(file_name, ".PNG");
 }
 
-bool isJPGFile(const char *file_name) {
+bool is_jpg_file(const char *file_name) {
 
     if(file_name == NULL) 
         return false;
 
-    return checkExtension(file_name, ".jpg") || 
-           checkExtension(file_name, ".JPG") || 
-           checkExtension(file_name, ".jpeg") ||
-           checkExtension(file_name, ".JPEG");
+    return check_extension(file_name, ".jpg") || 
+           check_extension(file_name, ".JPG") || 
+           check_extension(file_name, ".jpeg") ||
+           check_extension(file_name, ".JPEG");
 }

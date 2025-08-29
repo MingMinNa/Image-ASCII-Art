@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-double calcBlockMean(
-    Image *image_ptr,
+double calc_block_mean(
+    image *image_ptr,
     int i, 
     int j, 
     double cell_height, 
@@ -48,13 +48,13 @@ double calcBlockMean(
     return sum * 1.0 / count;
 }
 
-Color calcBlockColor(
-    Image *image_ptr, 
+color calc_block_color(
+    image *image_ptr, 
     int i, 
     int j, 
     double cell_height, 
     double cell_width, 
-    Color bg) {
+    color bg) {
 
     const int32_t channels = image_ptr->channels;
     const int32_t height   = image_ptr->height;
@@ -90,7 +90,7 @@ Color calcBlockColor(
         }
     }
 
-    Color ret_color = { 
+    color ret_color = { 
         .r = (uint8_t)(r_sum * 1.0 / count),
         .g = (uint8_t)(g_sum * 1.0 / count),
         .b = (uint8_t)(b_sum * 1.0 / count),
@@ -99,7 +99,7 @@ Color calcBlockColor(
     return ret_color;
 }
 
-void TextAscii(Arguments *args) {
+void text_ascii(arguments *args) {
 
     const char *input_image_path = args->input_path;
     const char *output_text_path = args->output_path;
@@ -109,8 +109,8 @@ void TextAscii(Arguments *args) {
     if(args->mode == SIMPLE) alphabet = simple_alphabet;
     else                     alphabet = complex_alphabet;
 
-    Image *raw_image = loadImage(input_image_path);
-    Image *gray_image = toGray(raw_image);
+    image *raw_image = load_image(input_image_path);
+    image *gray_image = to_gray(raw_image);
 
     double cell_width  = gray_image->width * 1.0 / num_cols;
     double cell_height = 2.0 * cell_width;
@@ -131,7 +131,7 @@ void TextAscii(Arguments *args) {
 
     for(uint32_t i = 0; i < num_rows; ++i) {
         for(uint32_t j = 0; j < num_cols; ++j) {
-            double mean = calcBlockMean(gray_image, i, j, cell_height, cell_width);
+            double mean = calc_block_mean(gray_image, i, j, cell_height, cell_width);
             uint32_t char_idx = (uint32_t)(mean * num_chars / 255.0);
             fwrite(&alphabet[min(char_idx, num_chars - 1)], sizeof(char), 1, output_fp);
         }
@@ -139,22 +139,22 @@ void TextAscii(Arguments *args) {
         fwrite(&newline, sizeof(char), 1, output_fp);
     }
     fclose(output_fp);
-    freeImage(raw_image);
-    freeImage(gray_image);
+    free_image(raw_image);
+    free_image(gray_image);
     return;
 }
 
-void GrayImageAscii(Arguments *args) {
+void gray_image_ascii(arguments *args) {
 
-    Font  *font_ptr  = getFont(args->mode);
+    font  *font_ptr  = get_font(args->mode);
     size_t num_chars = strlen(font_ptr->char_list);
 
     const char *input_image_path  = args->input_path;
     const char *output_image_path = args->output_path;
     uint32_t num_cols = args->num_cols;
 
-    Image *raw_image = loadImage(input_image_path);
-    Image *gray_image = toGray(raw_image);
+    image *raw_image = load_image(input_image_path);
+    image *gray_image = to_gray(raw_image);
 
     int32_t h_scale = font_ptr->h_scale;
     double cell_width  = gray_image->width * 1.0 / num_cols;
@@ -186,7 +186,7 @@ void GrayImageAscii(Arguments *args) {
     int32_t out_height   = h_scale * char_height * num_rows;
     int32_t out_channels = 1;
 
-    Image *out_image = createImage(
+    image *out_image = create_image(
         out_width, 
         out_height, 
         out_channels, 
@@ -194,12 +194,12 @@ void GrayImageAscii(Arguments *args) {
     );
     memset(out_image->data, args->bg_code, out_width * out_height * out_channels);
 
-    Color bg_color = {
+    color bg_color = {
         .r = args->bg_code,
         .g = args->bg_code,
         .b = args->bg_code,
     };
-    Color fg_color = {
+    color fg_color = {
         .r = 255 - bg_color.r,
         .b = 255 - bg_color.b,
         .g = 255 - bg_color.g,
@@ -208,43 +208,43 @@ void GrayImageAscii(Arguments *args) {
     for(uint32_t i = 0; i < num_rows; ++i) {
         for(uint32_t j = 0; j < num_cols; ++j) {
 
-            double mean = calcBlockMean(gray_image, i, j, cell_height, cell_width);
+            double mean = calc_block_mean(gray_image, i, j, cell_height, cell_width);
             uint32_t char_idx = (uint32_t)(mean * num_chars / 255.0);
             char ch = font_ptr->char_list[min(char_idx, num_chars - 1)];
 
             int32_t x_pos = j * char_width;
             int32_t y_pos = i * char_height;
 
-            renderChar( 
+            render_char( 
                 out_image, x_pos   , y_pos   , ch,  
                 font_ptr , fg_color, bg_color
             );
         }
     }
 
-    BBox bbox = findBoundingBox(out_image, args->bg_code);
-    Image *cropped_image = cropImage(out_image, bbox);
+    bbox bbox = find_bounding_box(out_image, args->bg_code);
+    image *cropped_image = crop_image(out_image, bbox);
 
-    saveImage(cropped_image, output_image_path);
+    save_image(cropped_image, output_image_path);
 
-    freeFont(font_ptr);
-    freeImage(raw_image);
-    freeImage(gray_image);
-    freeImage(out_image);
-    freeImage(cropped_image);
+    free_font(font_ptr);
+    free_image(raw_image);
+    free_image(gray_image);
+    free_image(out_image);
+    free_image(cropped_image);
     return;
 }
 
-void ColorImageAscii(Arguments *args) {
+void color_image_ascii(arguments *args) {
 
-    Font  *font_ptr  = getFont(args->mode);
+    font  *font_ptr  = get_font(args->mode);
     size_t num_chars = strlen(font_ptr->char_list);
 
     const char *input_image_path  = args->input_path;
     const char *output_image_path = args->output_path;
     uint32_t num_cols = args->num_cols;
 
-    Image *raw_image = loadImage(input_image_path);
+    image *raw_image = load_image(input_image_path);
     
     int32_t h_scale = font_ptr->h_scale;
     double cell_width  = raw_image->width * 1.0 / num_cols;
@@ -276,7 +276,7 @@ void ColorImageAscii(Arguments *args) {
     int32_t out_height = h_scale * char_height * num_rows;
     int32_t out_channels = 3;
 
-    Image *out_image = createImage(
+    image *out_image = create_image(
         out_width, 
         out_height, 
         out_channels, 
@@ -284,7 +284,7 @@ void ColorImageAscii(Arguments *args) {
     );
     memset(out_image->data, args->bg_code, out_width * out_height * out_channels);
 
-    Color bg_color = {
+    color bg_color = {
         .r = args->bg_code,
         .g = args->bg_code,
         .b = args->bg_code,
@@ -293,7 +293,7 @@ void ColorImageAscii(Arguments *args) {
     for(uint32_t i = 0; i < num_rows; ++i) {
         for(uint32_t j = 0; j < num_cols; ++j) {
 
-            Color block_avg_color = calcBlockColor(raw_image, i, j, cell_height, cell_width, bg_color);
+            color block_avg_color = calc_block_color(raw_image, i, j, cell_height, cell_width, bg_color);
             double color_mean = (block_avg_color.r + block_avg_color.g + block_avg_color.b) / 3.0;
             uint32_t char_idx = (uint32_t)(color_mean * num_chars / 255.0);
             char ch = font_ptr->char_list[min(char_idx, num_chars - 1)];
@@ -301,21 +301,21 @@ void ColorImageAscii(Arguments *args) {
             int32_t x_pos = j * char_width;
             int32_t y_pos = i * char_height;
             
-            renderChar( 
+            render_char( 
                 out_image, x_pos          , y_pos   , ch,  
                 font_ptr , block_avg_color, bg_color
             );
         }
     }
 
-    BBox bbox = findBoundingBox(out_image, args->bg_code);
-    Image *cropped_image = cropImage(out_image, bbox);
+    bbox bbox = find_bounding_box(out_image, args->bg_code);
+    image *cropped_image = crop_image(out_image, bbox);
 
-    saveImage(cropped_image, output_image_path);
+    save_image(cropped_image, output_image_path);
 
-    freeFont(font_ptr);
-    freeImage(raw_image);
-    freeImage(out_image);
-    freeImage(cropped_image);
+    free_font(font_ptr);
+    free_image(raw_image);
+    free_image(out_image);
+    free_image(cropped_image);
     return;
 }

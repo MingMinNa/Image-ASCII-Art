@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-#define min(a, b) (a < b)?(a):(b)
+#define min(a, b) ((a) < (b))?((a)):((b))
 
 #define CHECK_ERROR(error_cond, fmt, ...) \
 do { \
@@ -18,9 +18,9 @@ do { \
     } \
 } while(0)
 
-bool checkFileExist(const char *file_path);
-bool checkExtension(const char *file_name, const char *ext_name);
-bool isPNGFile(const char *file_name);
-bool isJPGFile(const char *file_name);
+bool check_file_exist(const char *file_path);
+bool check_extension(const char *file_name, const char *ext_name);
+bool is_png_file(const char *file_name);
+bool is_jpg_file(const char *file_name);
 
 #endif
