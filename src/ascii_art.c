@@ -1,9 +1,9 @@
-#include "../include/stb_image_write.h"
-#include "utils.h"
-#include "font.h"
-#include "image.h"
-#include "ascii_art.h"
-#include "arg_parser.h"
+#include "../include/stb/stb_image_write.h"
+#include "../include/Image-ASCII-Art/utils.h"
+#include "../include/Image-ASCII-Art/font.h"
+#include "../include/Image-ASCII-Art/image.h"
+#include "../include/Image-ASCII-Art/ascii_art.h"
+#include "../include/Image-ASCII-Art/arg_parser.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,8 +13,8 @@ double calc_block_mean(
     int i, 
     int j, 
     double cell_height, 
-    double cell_width) {
-
+    double cell_width
+) {
     const int32_t channels = image_ptr->channels;
     const int32_t height   = image_ptr->height;
     const int32_t width    = image_ptr->width;
@@ -54,8 +54,8 @@ color calc_block_color(
     int j, 
     double cell_height, 
     double cell_width, 
-    color bg) {
-
+    color bg
+) {
     const int32_t channels = image_ptr->channels;
     const int32_t height   = image_ptr->height;
     const int32_t width    = image_ptr->width;
@@ -99,8 +99,8 @@ color calc_block_color(
     return ret_color;
 }
 
-void text_ascii(arguments *args) {
-
+void text_ascii(arguments *args) 
+{
     const char *input_image_path = args->input_path;
     const char *output_text_path = args->output_path;
     uint32_t num_cols = args->num_cols;
@@ -144,8 +144,8 @@ void text_ascii(arguments *args) {
     return;
 }
 
-void gray_image_ascii(arguments *args) {
-
+void gray_image_ascii(arguments *args) 
+{
     font  *font_ptr  = get_font(args->mode);
     size_t num_chars = strlen(font_ptr->char_list);
 
@@ -235,8 +235,8 @@ void gray_image_ascii(arguments *args) {
     return;
 }
 
-void color_image_ascii(arguments *args) {
-
+void color_image_ascii(arguments *args) 
+{
     font  *font_ptr  = get_font(args->mode);
     size_t num_chars = strlen(font_ptr->char_list);
 

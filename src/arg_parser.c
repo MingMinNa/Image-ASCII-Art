@@ -1,7 +1,7 @@
-#include "utils.h"
-#include "font.h"
-#include "image.h"
-#include "arg_parser.h"
+#include "../include/Image-ASCII-Art/utils.h"
+#include "../include/Image-ASCII-Art/font.h"
+#include "../include/Image-ASCII-Art/image.h"
+#include "../include/Image-ASCII-Art/arg_parser.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,8 +16,8 @@ char *options[][2] = {
     {"--background", "str"},    // default: black(0)
 };
 
-arg_parser* init_parser(int argc, char *argv[]) {
-    
+arg_parser* init_parser(int argc, char *argv[]) 
+{
     arg_parser *parser = (arg_parser *)malloc(sizeof(arg_parser));
 
     // copy argc and argv
@@ -46,8 +46,8 @@ arg_parser* init_parser(int argc, char *argv[]) {
     return parser;
 }
 
-arguments* parse(arg_parser *parser) {
-    
+arguments* parse(arg_parser *parser) 
+{
     arguments *args = (arguments *)malloc(sizeof(arguments));
 
     /* default values */
@@ -162,8 +162,8 @@ arguments* parse(arg_parser *parser) {
 }
 
 // For debug
-void show_parser(arg_parser *parser) {
-
+void show_parser(arg_parser *parser) 
+{
     printf("argc: %u\n", parser->argc);
     for(uint32_t i = 0; i < parser->argc; ++i) {
         printf("argv[%u]: %s\n", i, parser->argv[i]);
@@ -177,8 +177,8 @@ void show_parser(arg_parser *parser) {
 }
 
 // For debug
-void show_args(arguments *args) {
-    
+void show_args(arguments *args) 
+{
     if(args->input_path != NULL)  printf("input_path: %s\n", args->input_path);
     else                          printf("input_path: none\n");
 
@@ -200,8 +200,8 @@ void show_args(arguments *args) {
     return;
 }
 
-void free_parser(arg_parser *parser) {
-
+void free_parser(arg_parser *parser) 
+{
     if(parser == NULL) 
         return;
     
@@ -218,8 +218,8 @@ void free_parser(arg_parser *parser) {
     free(parser);
 }
 
-void free_args(arguments *args) {
-
+void free_args(arguments *args) 
+{
     if(args == NULL) 
         return;
 

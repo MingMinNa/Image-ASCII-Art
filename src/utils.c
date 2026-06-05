@@ -1,11 +1,11 @@
-#include "utils.h"
+#include "../include/Image-ASCII-Art/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
-bool check_file_exist(const char *file_path) {
-    
+bool check_file_exist(const char *file_path) 
+{    
     if(file_path == NULL) 
         return false;
 
@@ -20,8 +20,8 @@ bool check_file_exist(const char *file_path) {
     return is_valid;
 }
 
-bool check_extension(const char *file_name, const char *ext_name) {
-    
+bool check_extension(const char *file_name, const char *ext_name) 
+{
     CHECK_ERROR(file_name == NULL, "The file name is NULL");
     CHECK_ERROR(ext_name == NULL, "The extension is NULL");
     size_t file_name_len = strlen(file_name);
@@ -38,8 +38,8 @@ bool check_extension(const char *file_name, const char *ext_name) {
     return true;
 }
 
-bool is_png_file(const char *file_name) {
-
+bool is_png_file(const char *file_name) 
+{
     if(file_name == NULL) 
         return false;
     
@@ -47,8 +47,8 @@ bool is_png_file(const char *file_name) {
            check_extension(file_name, ".PNG");
 }
 
-bool is_jpg_file(const char *file_name) {
-
+bool is_jpg_file(const char *file_name) 
+{
     if(file_name == NULL) 
         return false;
 

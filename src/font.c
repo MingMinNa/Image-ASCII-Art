@@ -1,8 +1,8 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 
-#include "utils.h"
-#include "font.h"
-#include "image.h"
+#include "../include/Image-ASCII-Art/utils.h"
+#include "../include/Image-ASCII-Art/font.h"
+#include "../include/Image-ASCII-Art/image.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -10,8 +10,8 @@
 const char *simple_alphabet  = "@%#*+=-:. ";
 const char *complex_alphabet = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
-font* get_font(enum mode_type mode) {
-    
+font* get_font(enum mode_type mode) 
+{
     font *font_ptr = (font *)malloc(sizeof(font));
 
     if(mode == SIMPLE)  font_ptr->char_list = simple_alphabet;
@@ -44,8 +44,8 @@ font* get_font(enum mode_type mode) {
     return font_ptr;
 }
 
-bbox find_bounding_box(image *out_image, uint8_t bg_code) {
-
+bbox find_bounding_box(image *out_image, uint8_t bg_code) 
+{
     const int32_t height   = out_image->height, 
                   width    = out_image->width, 
                   channels = out_image->channels;
@@ -91,8 +91,8 @@ bbox find_bounding_box(image *out_image, uint8_t bg_code) {
     return box;
 }
 
-void free_font(font *font_ptr) {
-
+void free_font(font *font_ptr) 
+{
     if(font_ptr == NULL) 
         return;
 
