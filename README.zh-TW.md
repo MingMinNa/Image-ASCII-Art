@@ -1,4 +1,4 @@
-# 圖片 ASCII 藝術 
+# Image ASCII Art
 
 <a href="./README.md">English</a> | 繁體中文
 
@@ -83,6 +83,28 @@
   <i>圖片轉彩色 ASCII 圖片</i><br/>
   <img src="demo/Aris_simple_500_black.png" width=800>
   <img src="demo/Aris_complex_500_white.png" width=800><br/>
+  <img src="demo/Aris_english_500_black.png" width=800><br/>
+  <img src="demo/Aris_english_500_white.png" width=800><br/>
+</p>
+
+## 與 ASCII-generator 的對比
+下方有兩組對比，每組對比內的三張圖，依序分別為 
+- 原始圖片
+- ASCII-generator 生成的圖片
+- Image-ASCII-Art 生成的圖片
+
+<p align="center">
+  <i>對比 (1)</i><br/>
+  <img src="demo/Beauty.jpg" width=800>
+  <img src="demo/AG_complex_color_200.jpg" width=800>
+  <img src="demo/IAA_complex_color_200.jpg" width=800>
+</p>
+
+<p align="center">
+  <i>對比 (2)</i><br/>
+  <img src="demo/FlightOfTheFeathers.jpg" width=800>
+  <img src="demo/AG_english_color_400.jpg" width=800>
+  <img src="demo/IAA_english_color_400.jpg" width=800>
 </p>
 
 ## 參考資料與使用工具
