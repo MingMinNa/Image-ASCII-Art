@@ -8,7 +8,8 @@ typedef struct image image;
 
 enum mode_type {
     SIMPLE, 
-    COMPLEX
+    COMPLEX,
+    ENGLISH
 };
 
 typedef struct color{

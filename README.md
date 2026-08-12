@@ -1,13 +1,15 @@
 # Image ASCII Art
 
-<a href="./README.md">English</a> | <a href="./README.zh-TW.md">繁體中文</a>
+English | <a href="./README.zh-TW.md">繁體中文</a>
+
+![Static Badge](https://img.shields.io/badge/C-17-blue) [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 
 The project is a **simplified C language version** of [ASCII-generator](https://github.com/vietnh1009/ASCII-generator?tab=readme-ov-file).  
 It aims to reimplement part of its core functionalities in C, providing a simple tool for converting images into ASCII art.
 
 ## Project Scope
 - Focuses on converting images to ASCII art. Convertion for videos is not included at this stage.
-- Simplifies the multilingual character sets from `ASCII-generator`, providing only general-purpose character sets (simple and complex).
+- Simplifies the multilingual character sets from `ASCII-generator`, providing only general-purpose character sets and english character set.
 
 ## Function Modules
 
@@ -36,9 +38,9 @@ It aims to reimplement part of its core functionalities in C, providing a simple
         --type          ["text", "image", "image_color"]
         --input         Path string
         --output        Path string
-        --num_cols      Integer                Default: 300
-        --mode          ["simple", "complex"]  Default: complex
-        --background    ["white", "black"]     Default: black
+        --num_cols      Integer                           Default: 300
+        --mode          ["simple", "complex", "english"]  Default: complex
+        --background    ["white", "black"]                Default: black
     ```
 
     #### Example Commands
@@ -84,6 +86,3 @@ It aims to reimplement part of its core functionalities in C, providing a simple
 ## References & Tools
 - [vietnh1009/ASCII-generator](https://github.com/vietnh1009/ASCII-generator)：Original logic for image-to-ASCII conversion.
 - [nothings/stb](https://github.com/nothings/stb)：Lightweight C image processing tool.
-
-## Additional Notes
-> Although the project attempts to reproduce the effects of ASCII-generator, the differences in the programming language and image processing tool may result in slight variations in the output.

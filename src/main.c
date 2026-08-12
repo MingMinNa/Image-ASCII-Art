@@ -11,8 +11,7 @@ int main(int argc, char *argv[])
     arg_parser *parser = init_parser(argc, argv);
     arguments *args = parse(parser);
     
-    switch (args->func_type){
-
+    switch (args->func_type) {
         case TEXT_ASCII:
             text_ascii(args);
             break;

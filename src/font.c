@@ -9,17 +9,22 @@
 
 const char *simple_alphabet  = "@%#*+=-:. ";
 const char *complex_alphabet = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+const char *english_alphabet = "oueiBAYpJSQtTPEmqZOhNrUxzXygWCDlkVKwn";
 
 font* get_font(enum mode_type mode) 
 {
     font *font_ptr = (font *)malloc(sizeof(font));
 
-    if(mode == SIMPLE)  font_ptr->char_list = simple_alphabet;
-    else                font_ptr->char_list = complex_alphabet;
+    switch (mode) {
+        case SIMPLE:  font_ptr->char_list = simple_alphabet;  break;
+        case COMPLEX: font_ptr->char_list = complex_alphabet; break;
+        case ENGLISH: font_ptr->char_list = english_alphabet; break;
+        default:      break;
+    }
     
     font_ptr->sample_character = 'A';
-    font_ptr->pad_x = 1;
-    font_ptr->pad_y = 2;
+    font_ptr->pad_x = 0;
+    font_ptr->pad_y = 0;
 
     FILE *fp = fopen("fonts/DejaVuSansMono-Bold.ttf", "rb");
     CHECK_ERROR(fp == NULL, "Fail to load font");
@@ -38,8 +43,11 @@ font* get_font(enum mode_type mode)
     }
 
     float pixel_height = 20.0f;
-    font_ptr->scale    = stbtt_ScaleForPixelHeight(&font_ptr->fontinfo, pixel_height);
-    font_ptr->h_scale  = 2;
+    font_ptr->scale = stbtt_ScaleForMappingEmToPixels(
+        &font_ptr->fontinfo, 
+        pixel_height
+    );
+    font_ptr->h_scale = 2;
     
     return font_ptr;
 }
@@ -58,18 +66,18 @@ bbox find_bounding_box(image *out_image, uint8_t bg_code)
 
             bool is_bg = true;
 
-            for(int32_t c = 0; c < channels; ++ c) {
+            for (int32_t c = 0; c < channels; ++ c) {
                 uint8_t pixel = out_image->data[(y * width + x) * channels + c];
-                if(pixel != bg_code) {
+                if (pixel != bg_code) {
                     is_bg = false;
                     break;
                 }
             }
 
             if (!is_bg) {
-                if (x < left) left = x;
-                if (x > right) right = x;
-                if (y < top) top = y;
+                if (x < left)   left = x;
+                if (x > right)  right = x;
+                if (y < top)    top = y;    
                 if (y > bottom) bottom = y;
             }
         }
@@ -93,8 +101,7 @@ bbox find_bounding_box(image *out_image, uint8_t bg_code)
 
 void free_font(font *font_ptr) 
 {
-    if(font_ptr == NULL) 
-        return;
+    if (font_ptr == NULL) return;
 
     if (font_ptr->ttf_buffer != NULL) 
         free(font_ptr->ttf_buffer);

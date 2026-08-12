@@ -19,12 +19,12 @@ image* create_image(int32_t width, int32_t height, int32_t channels, uint8_t *da
     image_ptr->channels = channels;
     image_ptr->size     = width * height * channels;
     
-    if(data == NULL)
+    if (data == NULL)
         image_ptr->data = (uint8_t *)malloc(sizeof(uint8_t) * image_ptr->size);
     else
         image_ptr->data = data;
 
-    if(channels >= 3) 
+    if (channels >= 3) 
         image_ptr->is_gray = false;
     else
         image_ptr->is_gray = true;
@@ -48,7 +48,7 @@ image* to_gray(image *image_ptr)
 {
     int32_t gray_channels = 0;
     
-    if(image_ptr->is_gray == false)
+    if (image_ptr->is_gray == false)
         gray_channels = (image_ptr->channels == 4) ? (2): (1);
     else
         gray_channels = image_ptr->channels;
@@ -65,40 +65,42 @@ image* to_gray(image *image_ptr)
 
     // formula: grayscale = (0.299 * red) + (0.587 * green) + (0.114 * blue)
     // OpenCV reference: https://docs.opencv.org/3.4/de/d25/imgproc_color_conversions.html 
-    for(; p1_idx < image_ptr->size; p1_idx += p1_step, p2_idx += p2_step){
+    for (; p1_idx < image_ptr->size; p1_idx += p1_step, p2_idx += p2_step) {
         
         // [0]: red, [1]: green, [2]: blue, [3]: alpha
-        if( image_ptr->is_gray  == false && 
-            image_ptr->channels == 4) {
+        if (image_ptr->is_gray  == false && 
+            image_ptr->channels == 4
+        ) {
+            gray_image->data[p2_idx] = \
+                image_ptr->data[p1_idx] * 0.299 + \
+                image_ptr->data[p1_idx + 1] * 0.587 + \
+                image_ptr->data[p1_idx + 2] * 0.114;
 
-            gray_image->data[p2_idx] = image_ptr->data[p1_idx] * 0.299 + \
-                                       image_ptr->data[p1_idx + 1] * 0.587 + \
-                                       image_ptr->data[p1_idx + 2] * 0.114;
-            
             gray_image->data[p2_idx + 1] = image_ptr->data[p1_idx + 3];
         }
         // [0]: red, [1]: green, [2]: blue
-        else if(
+        else if (
             image_ptr->is_gray  == false && 
-            image_ptr->channels == 3) {
-
-            gray_image->data[p2_idx] = image_ptr->data[p1_idx] * 0.299 + \
-                                       image_ptr->data[p1_idx + 1] * 0.587 + \
-                                       image_ptr->data[p1_idx + 2] * 0.114;
+            image_ptr->channels == 3
+        ) {
+            gray_image->data[p2_idx] =  \
+                image_ptr->data[p1_idx] * 0.299 + \
+                image_ptr->data[p1_idx + 1] * 0.587 + \
+                image_ptr->data[p1_idx + 2] * 0.114;
         }
         // [0]: grayscale, [1]: alpha
-        else if(
+        else if (
             image_ptr->is_gray  == true && 
-            image_ptr->channels == 2) {
-                
+            image_ptr->channels == 2
+        ) {
             gray_image->data[p2_idx]     = image_ptr->data[p1_idx];
             gray_image->data[p2_idx + 1] = image_ptr->data[p1_idx + 1];
         }
         // [0]: grayscale
-        else if(
+        else if (
             image_ptr->is_gray  == true && 
-            image_ptr->channels == 1) {
-                
+            image_ptr->channels == 1
+        ) {        
             gray_image->data[p2_idx]     = image_ptr->data[p1_idx];
         }
     }
@@ -117,8 +119,11 @@ void render_char(
     int w, h, xoff, yoff;
 
     uint8_t *bitmap = stbtt_GetCodepointBitmap(
-        &font_ptr->fontinfo, 0, font_ptr->scale,
-        ch, &w, &h, &xoff, &yoff);
+        &font_ptr->fontinfo, 
+        font_ptr->scale, 
+        font_ptr->scale,
+        ch, &w, &h, &xoff, &yoff
+    );
 
     for (int y = 0; y < h; ++y) {
         int out_y = y_pos + y + yoff;
@@ -131,11 +136,11 @@ void render_char(
             int out_idx = (out_y * out_w + out_x) * channels;
 
             uint8_t alpha = bitmap[y * w + x];
-            if(channels == 1) {
+            if (channels == 1) {
                 uint8_t blended = (alpha * fg_color.r + (255 - alpha) * bg_color.r) / 255;
                 out_image->data[out_idx] = blended;
             }
-            else if(channels == 3) {
+            else if (channels == 3) {
                 out_image->data[out_idx + 0] = (alpha * fg_color.r + (255 - alpha) * bg_color.r) / 255;
                 out_image->data[out_idx + 1] = (alpha * fg_color.g + (255 - alpha) * bg_color.g) / 255;
                 out_image->data[out_idx + 2] = (alpha * fg_color.b + (255 - alpha) * bg_color.b) / 255;
@@ -159,7 +164,7 @@ image* crop_image(image *out_image, bbox box)
 
     for (int y = 0; y < cropped_h; ++y) {
         for (int x = 0; x < cropped_w; ++x) {
-            for(int c = 0; c < channels; ++c) {
+            for (int c = 0; c < channels; ++c) {
                 cropped[(y * cropped_w + x) * channels + c] 
                     = out_image->data[((box.top + y) * out_w + (box.left + x)) * channels + c];
             }
@@ -173,17 +178,17 @@ image* crop_image(image *out_image, bbox box)
 
 void save_image(const image *image_ptr, const char *output_image_path) 
 {
-    if(is_png_file(output_image_path)) {
+    if (is_png_file(output_image_path)) {
         stbi_write_png( 
             output_image_path  , image_ptr->width, image_ptr->height, 
             image_ptr->channels, image_ptr->data , image_ptr->width * image_ptr->channels
         );
         return;
     }
-    else if(is_jpg_file(output_image_path)) {
+    else if (is_jpg_file(output_image_path)) {
         stbi_write_jpg( 
             output_image_path  , image_ptr->width, image_ptr->height, 
-            image_ptr->channels, image_ptr->data , 100
+            image_ptr->channels, image_ptr->data , 75
         );
         return;
     }
@@ -193,15 +198,16 @@ void save_image(const image *image_ptr, const char *output_image_path)
 
 void free_image(image *image_ptr) 
 {    
-    if(image_ptr == NULL) return;
+    if (image_ptr == NULL) return;
 
-    if(image_ptr->data != NULL) {
+    if (image_ptr->data != NULL) {
         stbi_image_free(image_ptr->data);
     }
 
+    image_ptr->size = 0;
     image_ptr->width = 0;
     image_ptr->height = 0;
-    image_ptr->data = NULL;
     image_ptr->channels = 0;
+    image_ptr->data = NULL;
     free(image_ptr);
 }
